@@ -23,7 +23,7 @@ VCR.configure do |c|
       true
     else
       ignoring = false
-      
+
       if IGNORE_LOGIN_REQUEST
         ignoring |= !Nokogiri::XML(request.to_hash["body"]["string"]).remove_namespaces!.xpath('/Envelope/Body/login', ).empty?
       end
@@ -42,6 +42,7 @@ Responsys.configure do |config|
     username: CREDENTIALS["username"],
     password: CREDENTIALS["password"],
     wsdl: CREDENTIALS["wsdl"],
-    debug: false
+    element_form_default: :qualified,
+    ssl_version: :TLSv1
   }
 end
