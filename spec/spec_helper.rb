@@ -18,23 +18,8 @@ IGNORE_LOGOUT_REQUEST = true
 VCR.configure do |c|
   c.cassette_library_dir = "spec/fixtures/vcr_cassettes"
   c.hook_into :webmock
-  c.ignore_request do |request|
-    if request.to_hash["body"]["string"].empty?
-      true
-    else
-      ignoring = false
-      
-      if IGNORE_LOGIN_REQUEST
-        ignoring |= !Nokogiri::XML(request.to_hash["body"]["string"]).remove_namespaces!.xpath('/Envelope/Body/login', ).empty?
-      end
-
-      if IGNORE_LOGOUT_REQUEST
-        ignoring |= !Nokogiri::XML(request.to_hash["body"]["string"]).remove_namespaces!.xpath('/Envelope/Body/logout', ).empty?
-      end
-
-      ignoring
-    end
-  end
+  c.filter_sensitive_data('your_responsys_username') { CREDENTIALS["username"] }
+  c.filter_sensitive_data('your_responsys_password') { CREDENTIALS["password"] }
 end
 
 Responsys.configure do |config|
